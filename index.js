@@ -39,6 +39,7 @@ const { MongoClient } = require('mongodb')
             await page.setUserAgent('Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.81 Mobile Safari/537.36')
             await page.setViewport({ width: 600, height: 2048 })
             await page.goto(post.link, { waitUntil: 'networkidle2' })
+            await page.evaluate(() => $('#div_adnmore_area').hide())
             await page.emulateMediaType('screen')
 
             const pdf = await page.pdf({ width: 1024, height: 2048 }),
