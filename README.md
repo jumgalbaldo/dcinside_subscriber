@@ -1,6 +1,6 @@
 # dcinside_subscriber
 
-## Default settings
+### Default settings
 
 * Install mongodb
 * Create collection `env` and insert a document
@@ -8,8 +8,8 @@
   ```jsonc
   {
       "board": "cartoon",           // board name
-      "interval": 6000,             // refresh interval
+      "interval": 60000,             // refresh interval
       "botToken": "123456:ABCDEFG", // telegram bot token 
-      "chatId": "@channelname"      // telegram channel name
+      "chatId": "@channelname"      // telegram channel id
   }
   ```
