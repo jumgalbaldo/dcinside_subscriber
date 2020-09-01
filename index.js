@@ -27,11 +27,11 @@ const { MongoClient } = require('mongodb')
             if (posts.length > 0) {
                await postsCollection.insertOne(posts[0])
             }
-            throw new Error('null savedPosts')
+            throw new Error('empty savedPosts')
          }
 
-         const postsNew = await site.getPosts({ offsetNo: savedPosts[savedPosts.length - 1].no }),
-               posts = postsNew.filter(({ no }) =>
+         const postsRecent = await site.getPosts({ offsetNo: savedPosts[savedPosts.length - 1].no }),
+               posts = postsRecent.filter(({ no }) =>
                   !savedPosts.find(({ no: no_ }) => no === no_)
                )
          for (let post of posts.reverse()) {
