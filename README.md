@@ -8,7 +8,7 @@
   ```jsonc
   {
       "board": "cartoon",           // board name
-      "interval": 60000,             // refresh interval
+      "interval": 60000,            // refresh interval
       "botToken": "123456:ABCDEFG", // telegram bot token 
       "chatId": "@channelname"      // telegram channel id
   }
