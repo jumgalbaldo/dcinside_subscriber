@@ -3,6 +3,7 @@
 ### Default settings
 
 * Install mongodb
+* Use db `dcinside_subscriber`
 * Create collection `env` and insert a document
   ##### env example
   ```jsonc
