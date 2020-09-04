@@ -2,6 +2,7 @@ const { MongoClient } = require('mongodb')
       Site = require('./Site'),
       puppeteer = require('puppeteer'),
       sharp = require('sharp'),
+      sanitize = require('sanitize-filename'),
       FormData = require('form-data')
       axios = require('axios')
 
@@ -50,8 +51,8 @@ const { MongoClient } = require('mongodb')
 
             const formData = new FormData()
             formData.append('chat_id', env.chatId)
-            formData.append('document', pdf, { filename : `${post.title}.pdf` })
-            formData.append('thumb', thumbnail, { filename : `${post.title}.jpg` })
+            formData.append('document', pdf, { filename : sanitize(`${post.title}.pdf`) })
+            formData.append('thumb', thumbnail, { filename : sanitize(`${post.title}.jpg`) })
             formData.append('caption', `${post.title} - ${post.writer}\n<a href="${post.link}">본문 보기</a>`)
             formData.append('parse_mode', 'HTML')
             await axios.post(`https://api.telegram.org/bot${env.botToken}/sendDocument`, formData, { headers: formData.getHeaders() })
