@@ -3,7 +3,8 @@
 ### Default settings
 
 * Install mongodb
-* Use db `dcinside_subscriber`
+* Use db `use dcinside_subscriber`
+* Create collection `posts` and create a index `db.posts.createIndex({ no: -1 })`
 * Create collection `env` and insert a document
   ##### env example
   ```jsonc
