@@ -10,8 +10,9 @@
   ```jsonc
   {
       "board": "cartoon",           // board name
+      "savedPostsLimit": 30,        // saved posts finding limit
       "interval": 60000,            // refresh interval
-      "botToken": "123456:ABCDEFG", // telegram bot token 
+      "botToken": "123456:ABCDEFG", // telegram bot token
       "chatId": "@channelname"      // telegram channel id
   }
   ```

@@ -22,7 +22,7 @@ const { MongoClient } = require('mongodb')
 
    async function work() {
       try {
-         const savedPosts = await postsCollection.find({}, { limit: 10, sort: { no: -1 } }).toArray()
+         const savedPosts = await postsCollection.find({}, { limit: env.savedPostsLimit, sort: { no: -1 } }).toArray()
          if (savedPosts.length === 0) {
             const posts = await site.getPosts({ limit: 1 })
             if (posts.length > 0) {
