@@ -10,6 +10,7 @@
   "license": "",
   "dependencies": {
     "axios": "^0.20.0",
+    "escape-html": "^1.0.3",
     "form-data": "^3.0.0",
     "jquery": "^3.5.1",
     "jsdom": "^16.4.0",
