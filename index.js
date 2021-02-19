@@ -57,7 +57,11 @@ const { MongoClient } = require('mongodb')
             formData.append('thumb', thumbnail, { filename: `${filename}.jpg` })
             formData.append('caption', `${escape(post.title)} - ${escape(post.writer)}\n<a href="${post.link}">본문 보기</a>`)
             formData.append('parse_mode', 'HTML')
-            await axios.post(`https://api.telegram.org/bot${env.botToken}/sendDocument`, formData, { headers: formData.getHeaders() })
+            await axios.post(`https://api.telegram.org/bot${env.botToken}/sendDocument`, formData, { 
+		    headers: formData.getHeaders(),
+		    maxContentLength: Infinity,
+		    maxBodyLength: Infinity
+	    })
 
             await postsCollection.insertOne(post)
 
