@@ -37,31 +37,36 @@ const { MongoClient } = require('mongodb')
                   !savedPosts.find(({ no: no_ }) => no === no_)
                )
          for (let post of posts.reverse()) {
-            const page = await browser.newPage()
-            await page.setUserAgent('Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.81 Mobile Safari/537.36')
-            await page.setViewport({ width: 600, height: 2048 })
-            await page.goto(post.link, { waitUntil: 'networkidle2' })
-            await page.evaluate(() => $('#div_adnmore_area').hide())
-            await page.emulateMediaType('screen')
+            try {
+               const page = await browser.newPage()
+               await page.setUserAgent('Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.81 Mobile Safari/537.36')
+               await page.setViewport({ width: 600, height: 2048 })
+               await page.goto(post.link, { waitUntil: 'networkidle2' })
+               await page.evaluate(() => $('#div_adnmore_area').hide())
+               await page.emulateMediaType('screen')
 
-            const pdf = await page.pdf({ width: 1024, height: 2048 }),
-                  image = await page.screenshot({ type: 'jpeg', clip: { x: 0, y: 180, width: 600, height: 600 } }),
-                  thumbnail = await sharp(image).resize({ width: 240 }).toBuffer()
+               const pdf = await page.pdf({ width: 1024, height: 2048 }),
+                     image = await page.screenshot({ type: 'jpeg', clip: { x: 0, y: 180, width: 600, height: 600 } }),
+                     thumbnail = await sharp(image).resize({ width: 240 }).toBuffer()
 
-            await page.close()
+               await page.close()
 
-            const formData = new FormData(),
-                  filename = sanitize(post.title) || '_'
-            formData.append('chat_id', env.chatId)
-            formData.append('document', pdf, { filename: `${filename}.pdf` })
-            formData.append('thumb', thumbnail, { filename: `${filename}.jpg` })
-            formData.append('caption', `${escape(post.title)} - ${escape(post.writer)}\n<a href="${post.link}">본문 보기</a>`)
-            formData.append('parse_mode', 'HTML')
-            await axios.post(`https://api.telegram.org/bot${env.botToken}/sendDocument`, formData, { 
-		    headers: formData.getHeaders(),
-		    maxContentLength: Infinity,
-		    maxBodyLength: Infinity
-	    })
+               const formData = new FormData(),
+                     filename = sanitize(post.title) || '_'
+               formData.append('chat_id', env.chatId)
+               formData.append('document', pdf, { filename: `${filename}.pdf` })
+               formData.append('thumb', thumbnail, { filename: `${filename}.jpg` })
+               formData.append('caption', `${escape(post.title)} - ${escape(post.writer)}\n<a href="${post.link}">본문 보기</a>`)
+               formData.append('parse_mode', 'HTML')
+               await axios.post(`https://api.telegram.org/bot${env.botToken}/sendDocument`, formData, {
+                  headers: formData.getHeaders(),
+                  maxContentLength: Infinity,
+                  maxBodyLength: Infinity
+               })
+            }
+            catch (err) {
+               console.error(err)
+            }
 
             await postsCollection.insertOne(post)
 
