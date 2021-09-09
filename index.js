@@ -5,7 +5,8 @@ const { MongoClient } = require('mongodb')
       sanitize = require('sanitize-filename'),
       escape = require('escape-html'),
       FormData = require('form-data')
-      axios = require('axios')
+      axios = require('axios'),
+      delay = require('delay')
 
 ;(async () => {
    const client = await MongoClient.connect('mongodb://localhost:27017', { useUnifiedTopology: true }),
@@ -24,8 +25,7 @@ const { MongoClient } = require('mongodb')
       throw new Error('can not find env')
    }
 
-   const site = Site({ board: env.board }),
-         browser = await puppeteer.launch()
+   const site = Site({ board: env.board })
 
    async function work() {
       try {
@@ -43,9 +43,9 @@ const { MongoClient } = require('mongodb')
                   !savedPosts.find(({ no: no_ }) => no === no_)
                )
          for (let post of posts.reverse()) {
-            let page
+            const browser = await puppeteer.launch()
             try {
-               page = await browser.newPage()
+               const page = await browser.newPage()
                await page.setUserAgent('Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.81 Mobile Safari/537.36')
                await page.setViewport({ width: 600, height: 2048 })
                await page.goto(post.link, { waitUntil: 'networkidle2' })
@@ -79,33 +79,33 @@ const { MongoClient } = require('mongodb')
                })
 
                await postsCollection.insertOne(post)
+               console.log(post)
             }
             catch (err) {
                console.error(err)
 
-               await postsCollection.insertOne({
+               const result = {
                   ...post,
                   err: err.toString()
-               })
+               }
+
+               await postsCollection.insertOne(result)
+               console.log(result)
             }
             finally {
-               await page?.close()
+               await browser?.close()
             }
-            console.log(post)
+
+            await delay(1000)
          }
       }
       catch (err) {
          console.error(err)
       }
-      finally {
-         setTimeout(work, env.interval)
-      }
    }
 
-   work()
+   while (true) {
+      await work()
+      await delay(env.interval)
+   }
 })()
-
-
-
-
-
